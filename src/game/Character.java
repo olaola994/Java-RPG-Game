@@ -1,6 +1,7 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Character{
     String name;
@@ -41,7 +42,7 @@ public class Character{
         return this.friend != null;
     }
     public void getStatistics(){
-        System.out.println("HP: " + HP + " Mana: " + mana + " Stamina: "+ stamina);
+        System.out.println("Name: "+ name +" HP: " + HP + " Stamina: " + stamina + " Mana: " + mana);
     }
 
     public void attack(Character enemy, String kindOfAttack){
@@ -84,4 +85,101 @@ public class Character{
         else return null;
     }
 
+}
+
+class Monster extends Character{
+    Random liczba = new Random();
+    protected int EXPtoGive = liczba.nextInt(15);
+    Monster(String name, int HP, int mana, int stamina){
+        super(name, HP, mana, stamina);
+        friendly = false;
+    }
+
+    @Override
+    public void getStatistics() {
+        super.getStatistics();
+    }
+
+    public int getEXPtoGive() {
+        return EXPtoGive;
+    }
+}
+
+class Monster1 extends Monster{
+    Monster1(String name, int HP, int mana, int stamina){
+        super(name, HP, mana, stamina);
+        friendly = false;
+    }
+    public void attack(Monster enemy, String kindOfAttack){
+        if(kindOfAttack.equals("physical")){
+            if(this.stamina >= 1){
+                enemy.setHP(enemy.getHP() - 1);
+                this.stamina -= 1;
+            }
+            else {
+                System.out.println("You have not enought stamina for phisical attack.");
+            }
+        }
+        else if (kindOfAttack.equals("magic")){
+            if(this.stamina >= 1){
+                enemy.setHP(enemy.getHP() - 1);
+                this.stamina -= 1;
+            }
+            else {
+                System.out.println("You have not enought mana for magic attack.");
+            }
+        }
+    }
+}
+class Monster2 extends Monster{
+    Monster2(String name, int HP, int mana, int stamina){
+        super(name, HP, mana, stamina);
+        friendly = false;
+    }
+    public void attack(Monster enemy, String kindOfAttack){
+        if(kindOfAttack.equals("physical")){
+            if(this.stamina >= 2){
+                enemy.setHP(enemy.getHP() - 2);
+                this.stamina -= 2;
+            }
+            else {
+                System.out.println("You have not enought stamina for phisical attack.");
+            }
+        }
+        else if (kindOfAttack.equals("magic")){
+            if(this.stamina >= 2){
+                enemy.setHP(enemy.getHP() - 2);
+                this.stamina -= 2;
+            }
+            else {
+                System.out.println("You have not enought mana for magic attack.");
+            }
+        }
+    }
+}
+class Monster3 extends Monster{
+    Monster3(String name, int HP, int mana, int stamina){
+        super(name, HP, mana, stamina);
+        friendly = false;
+    }
+    public void attack(Monster enemy, String kindOfAttack){
+        if(kindOfAttack.equals("physical")){
+            if(this.stamina >= 3){
+                enemy.setHP(enemy.getHP() - 3);
+                this.stamina -= 3;
+            }
+            else {
+                System.out.println("You have not enought stamina for phisical attack.");
+            }
+        }
+        else if (kindOfAttack.equals("magic")){
+            if(this.stamina >= 3){
+                enemy.setHP(enemy.getHP() - 3);
+                this.stamina -= 3;
+            }
+            else {
+                System.out.println("You have not enought mana for magic attack.");
+            }
+        }
+    }
 }
