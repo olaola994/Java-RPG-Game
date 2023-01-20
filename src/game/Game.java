@@ -295,6 +295,7 @@ public class Game {
             System.out.println("I'm sorry. You lose");
         }
         }
+
         public static int losowanie(int bound){
             Random number = new Random();
             int whichItem = number.nextInt(bound) + 1;
