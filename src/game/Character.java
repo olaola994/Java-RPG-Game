@@ -10,7 +10,8 @@ public class Character{
     protected int stamina;
     protected ArrayList<Item> items;
     protected boolean friendly;
-    protected Character friend;
+    protected ArrayList<Friend> friends;
+    protected int EXP;
 
     public Character(String name, int HP, int mana, int stamina) {
         this.name = name;
@@ -18,6 +19,8 @@ public class Character{
         this.mana = mana;
         this.stamina = stamina;
         items = new ArrayList<Item>();
+        friends = new ArrayList<Friend>();
+        this.EXP = 0;
     }
 
     public String getName(){return name;}
@@ -25,62 +28,68 @@ public class Character{
     public int getMana() {return mana;}
     public int getStamina() {return stamina;}
 
+    public int getEXP() {
+        return EXP;
+    }
+
     public boolean isFriendly() {return friendly;}
     public ArrayList<Item> getItems(){
         return items;
+    }
+    public Item getItem(){
+        return items.get(0);
     }
 
     public void setHP(int HP) {this.HP = HP;}
     public void setMana(int mana) {this.mana = mana;}
     public void setStamina(int stamina) {this.stamina = stamina;}
+    public void setEXP(int EXP){this.EXP = EXP;}
 
     public void setFriendly(boolean friendly) {this.friendly = friendly;}
-    public void setFriend(Character friend){
-        this.friend = friend;
+    public void addFriend(Friend friend){
+        this.friends.add(friend);
     }
     public boolean hasFriend(){
-        return this.friend != null;
+        return this.friends != null;
+    }
+    public Character getFriend(Character friend){
+        return friend;
     }
     public void getStatistics(){
-        System.out.println("Name: "+ name +" HP: " + HP + " Stamina: " + stamina + " Mana: " + mana);
+        System.out.println("-----------------------------------------------------------");
+        System.out.println("| "+ name + " |EXP: " + EXP +" | HP: " + HP + "| Stamina: " + stamina + "| Mana: " + mana +"|");
+        System.out.println("-----------------------------------------------------------");
     }
 
     public void attack(Character enemy, String kindOfAttack){
-        if(kindOfAttack.equals("physical")){
-            if(this.stamina >= 5){
-                enemy.setHP(enemy.getHP() - 10);
-                this.stamina -= 5;
-            }
-            else {
-                System.out.println("You have not enought stamina for phisical attack.");
-            }
-        }
-        else if (kindOfAttack.equals("magic")){
-            if(this.stamina >= 5){
-                enemy.setHP(enemy.getHP() - 10);
-                this.stamina -= 5;
-            }
-            else {
-                System.out.println("You have not enought mana for magic attack.");
+        if(this.stamina >= 2 || this.mana >=2) {
+            if (kindOfAttack.equals("physical")) {
+                    enemy.setHP(enemy.getHP() - 4);
+                    this.stamina -= 2;
+            } else if (kindOfAttack.equals("magic")) {
+                    enemy.setHP(enemy.getHP() - 4);
+                    this.mana -= 2;
             }
         }
+
     }
     public void useItem(Item item){
-        if(items.contains(item)){
-            item.use(this);
-            items.remove(item);
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i).getName().equals(item.getName())) {
+                item.use(this);
+                items.remove(i);
+                return;
+            }
         }
-        else{
-            System.out.println("Character doen't have this item.");
-        }
+        System.out.println("Character doesn't have this item.");
 
     }
     public void addItem(Item item){
         items.add(item);
     }
-    public Character callFriend(){
+    public Friend callFriend(){
         if(hasFriend()){
-            return this.friend;
+            return this.friends.get(0);
         }
         else return null;
     }
@@ -89,97 +98,61 @@ public class Character{
 
 class Monster extends Character{
     Random liczba = new Random();
-    protected int EXPtoGive = liczba.nextInt(15);
+    protected int EXPtoGive = liczba.nextInt(6);
     Monster(String name, int HP, int mana, int stamina){
         super(name, HP, mana, stamina);
-        friendly = false;
+        this.friendly = false;
+    }
+    public void setName(String name){
+        this.name = name;
     }
 
-    @Override
-    public void getStatistics() {
-        super.getStatistics();
+    public void attack(Character enemy, String kindOfAttack, int level){
+
+            if (kindOfAttack.equals("physical")) {
+                    enemy.setHP(enemy.getHP() - level);
+                    this.stamina -= level;
+                    System.out.println("Monster made physical attack.");
+                try{
+                    Thread.sleep(3000);
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+            else if (kindOfAttack.equals("magic")) {
+                    enemy.setHP(enemy.getHP() - level);
+                    this.mana -= level;
+                    System.out.println("Monster made magical attack.");
+                try{
+                    Thread.sleep(3000);
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+
     }
 
+    public void getStatistics(){
+        System.out.println("----------------------------------------------------------");
+        System.out.println("|"+ name + " |EXP to give: "+ EXPtoGive + " | HP: " + HP + "| Stamina: " + stamina + "| Mana: " + mana +"|");
+        System.out.println("----------------------------------------------------------");
+    }
     public int getEXPtoGive() {
         return EXPtoGive;
     }
 }
 
-class Monster1 extends Monster{
-    Monster1(String name, int HP, int mana, int stamina){
-        super(name, HP, mana, stamina);
-        friendly = false;
+class Friend extends Character{
+    public Friend(){
+        super("friend", 2,2,2);
     }
-    public void attack(Monster enemy, String kindOfAttack){
-        if(kindOfAttack.equals("physical")){
-            if(this.stamina >= 1){
-                enemy.setHP(enemy.getHP() - 1);
-                this.stamina -= 1;
-            }
-            else {
-                System.out.println("You have not enought stamina for phisical attack.");
-            }
-        }
-        else if (kindOfAttack.equals("magic")){
-            if(this.stamina >= 1){
-                enemy.setHP(enemy.getHP() - 1);
-                this.stamina -= 1;
-            }
-            else {
-                System.out.println("You have not enought mana for magic attack.");
-            }
-        }
+    public void setName(String name){
+        this.name = name;
     }
-}
-class Monster2 extends Monster{
-    Monster2(String name, int HP, int mana, int stamina){
-        super(name, HP, mana, stamina);
-        friendly = false;
-    }
-    public void attack(Monster enemy, String kindOfAttack){
-        if(kindOfAttack.equals("physical")){
-            if(this.stamina >= 2){
-                enemy.setHP(enemy.getHP() - 2);
-                this.stamina -= 2;
-            }
-            else {
-                System.out.println("You have not enought stamina for phisical attack.");
-            }
-        }
-        else if (kindOfAttack.equals("magic")){
-            if(this.stamina >= 2){
-                enemy.setHP(enemy.getHP() - 2);
-                this.stamina -= 2;
-            }
-            else {
-                System.out.println("You have not enought mana for magic attack.");
-            }
-        }
-    }
-}
-class Monster3 extends Monster{
-    Monster3(String name, int HP, int mana, int stamina){
-        super(name, HP, mana, stamina);
-        friendly = false;
-    }
-    public void attack(Monster enemy, String kindOfAttack){
-        if(kindOfAttack.equals("physical")){
-            if(this.stamina >= 3){
-                enemy.setHP(enemy.getHP() - 3);
-                this.stamina -= 3;
-            }
-            else {
-                System.out.println("You have not enought stamina for phisical attack.");
-            }
-        }
-        else if (kindOfAttack.equals("magic")){
-            if(this.stamina >= 3){
-                enemy.setHP(enemy.getHP() - 3);
-                this.stamina -= 3;
-            }
-            else {
-                System.out.println("You have not enought mana for magic attack.");
-            }
-        }
+    public void attack(Character enemy){
+            enemy.setHP(enemy.getHP() - 2);
+            this.stamina -= 2;
+            System.out.println("Your friend made physical attack.");
+
     }
 }
